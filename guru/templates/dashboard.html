@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biomechanics Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .plot-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .badge-earned {
+            background-color: #28a745;
+        }
+        .badge-not-earned {
+            background-color: #6c757d;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Biomechanics Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#performance">Performance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#validation">Validation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#benchmarks">Benchmarks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gamification">Gamification</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Performance Metrics Section -->
+        <section id="performance">
+            <h2>Performance Metrics</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="plot-container">
+                        <div id="displacement-plot" class="loading">Loading displacement data...</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="plot-container">
+                        <div id="angles-plot" class="loading">Loading joint angles...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <h4>Jump Height</h4>
+                        <h2 id="jump-height">--</h2>
+                        <small>centimeters</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <h4>Repetitions</h4>
+                        <h2 id="repetitions">--</h2>
+                        <small>count</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <h4>Max Velocity</h4>
+                        <h2 id="max-velocity">--</h2>
+                        <small>m/s</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Validation Section -->
+        <section id="validation" class="mt-5">
+            <h2>Validation & Cheat Detection</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="plot-container">
+                        <div id="cheat-detection-plot" class="loading">Loading cheat detection...</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="plot-container">
+                        <div id="ai-validation-plot" class="loading">Loading AI validation...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <h5>Cheat Detection Status</h5>
+                        <p id="cheat-status">Analyzing...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benchmarking Section -->
+        <section id="benchmarks" class="mt-5">
+            <h2>Benchmarking & Normative Comparisons</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="plot-container">
+                        <div id="progress-plot" class="loading">Loading progress data...</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Performance Grades</h5>
+                        </div>
+                        <div class="card-body" id="grades-container">
+                            Loading grades...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gamification Section -->
+        <section id="gamification" class="mt-5">
+            <h2>Gamification & Progress</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="plot-container">
+                        <div id="points-plot" class="loading">Loading points data...</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Achievements</h5>
+                        </div>
+                        <div class="card-body" id="badges-container">
+                            Loading badges...
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>Statistics</h5>
+                        </div>
+                        <div class="card-body" id="stats-container">
+                            Loading statistics...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Integrity Section -->
+        <section id="audit" class="mt-5">
+            <h2>Data Integrity & Audit Logs</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Recent Audit Logs</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="audit-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Action</th>
+                                            <th>Model Version</th>
+                                            <th>Reviewer</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td colspan="5">Loading audit logs...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export Section -->
+        <section class="mt-5">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-primary btn-lg" onclick="exportData()">
+                        Export Data & Graphs
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load all dashboard data
+        async function loadDashboard() {
+            try {
+                // Load performance metrics
+                const performanceResponse = await fetch('/api/performance_metrics');
+                const performanceData = await performanceResponse.json();
+                
+                // Plot displacement
+                Plotly.newPlot('displacement-plot', 
+                    JSON.parse(performanceData.displacement_plot).data,
+                    JSON.parse(performanceData.displacement_plot).layout
+                );
+                
+                // Plot joint angles
+                Plotly.newPlot('angles-plot',
+                    JSON.parse(performanceData.angles_plot).data,
+                    JSON.parse(performanceData.angles_plot).layout
+                );
+
+                // Load computed metrics
+                const computedResponse = await fetch('/api/computed_metrics');
+                const computedData = await computedResponse.json();
+                
+                document.getElementById('jump-height').textContent = computedData.jump_height + ' cm';
+                document.getElementById('repetitions').textContent = computedData.repetitions;
+                document.getElementById('max-velocity').textContent = 
+                    computedData.kinematic_stats.velocity.max.toFixed(2);
+
+                // Load cheat detection
+                const cheatResponse = await fetch('/api/cheat_detection');
+                const cheatData = await cheatResponse.json();
+                
+                Plotly.newPlot('cheat-detection-plot',
+                    JSON.parse(cheatData.cheat_plot).data,
+                    JSON.parse(cheatData.cheat_plot).layout
+                );
+                
+                const cheatStatus = cheatData.cheat_scores.is_suspicious ? 
+                    'SUSPICIOUS ACTIVITY DETECTED' : 'No suspicious activity detected';
+                document.getElementById('cheat-status').textContent = cheatStatus;
+                document.getElementById('cheat-status').parentElement.className = 
+                    cheatData.cheat_scores.is_suspicious ? 'alert alert-warning' : 'alert alert-success';
+
+                // Load AI validation
+                const aiResponse = await fetch('/api/ai_validation');
+                const aiData = await aiResponse.json();
+                
+                Plotly.newPlot('ai-validation-plot',
+                    JSON.parse(aiData.validation_plot).data,
+                    JSON.parse(aiData.validation_plot).layout
+                );
+
+                // Load benchmarking
+                const benchmarkResponse = await fetch('/api/benchmarking');
+                const benchmarkData = await benchmarkResponse.json();
+                
+                Plotly.newPlot('progress-plot',
+                    JSON.parse(benchmarkData.progress_plot).data,
+                    JSON.parse(benchmarkData.progress_plot).layout
+                );
+                
+                // Display grades
+                const gradesHtml = Object.entries(benchmarkData.benchmarks).map(([metric, data]) => `
+                    <div class="mb-2">
+                        <strong>${metric.replace('_', ' ').toUpperCase()}</strong>
+                        <div class="d-flex justify-content-between">
+                            <span>Grade: ${data.grade}</span>
+                            <span>${data.percentile}th percentile</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${data.percentile}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('grades-container').innerHTML = gradesHtml;
+
+                // Load gamification
+                const gamificationResponse = await fetch('/api/gamification');
+                const gamificationData = await gamificationResponse.json();
+                
+                Plotly.newPlot('points-plot',
+                    JSON.parse(gamificationData.points_plot).data,
+                    JSON.parse(gamificationData.points_plot).layout
+                );
+                
+                // Display badges
+                const badgesHtml = gamificationData.gamification_data.badges.map(badge => `
+                    <div class="badge ${badge.earned ? 'badge-earned' : 'badge-not-earned'} mb-2 p-2">
+                        <div><strong>${badge.name}</strong></div>
+                        <small>${badge.description}</small>
+                    </div>
+                `).join('');
+                document.getElementById('badges-container').innerHTML = badgesHtml;
+                
+                // Display statistics
+                const statsData = gamificationData.gamification_data;
+                const statsHtml = `
+                    <p><strong>Total Points:</strong> ${statsData.total_points}</p>
+                    <p><strong>Level:</strong> ${statsData.level}</p>
+                    <p><strong>Leaderboard:</strong> #${statsData.leaderboard_position} of ${statsData.total_participants}</p>
+                    <p><strong>Streak:</strong> ${statsData.streak_days} days</p>
+                `;
+                document.getElementById('stats-container').innerHTML = statsHtml;
+
+                // Load audit logs
+                const auditResponse = await fetch('/api/audit_logs');
+                const auditData = await auditResponse.json();
+                
+                const auditTableHtml = auditData.audit_logs.map(log => `
+                    <tr>
+                        <td>${log.timestamp}</td>
+                        <td>${log.action}</td>
+                        <td>${log.model_version}</td>
+                        <td>${log.reviewer}</td>
+                        <td><span class="badge bg-success">${log.status}</span></td>
+                    </tr>
+                `).join('');
+                document.querySelector('#audit-table tbody').innerHTML = auditTableHtml;
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Export data function
+        async function exportData() {
+            try {
+                const response = await fetch('/api/export_data');
+                const data = await response.json();
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `biomechanics_export_${new Date().toISOString().slice(0,10)}.json`;
+                link.click();
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('Error exporting data. Please try again.');
+            }
+        }
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        // Auto-refresh every 30 seconds for real-time updates
+        setInterval(loadDashboard, 30000);
+    </script>
+</body>
+</html>
