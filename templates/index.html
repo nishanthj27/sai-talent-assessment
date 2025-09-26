@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAI Talent Assessment System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="/static/images/sai-logo.png" alt="SAI Logo" onerror="this.style.display='none'">
+                <h1>Sports Authority of India</h1>
+                <span class="subtitle">Talent Assessment System</span>
+            </div>
+            <div class="header-info">
+                <div class="date-time" id="dateTime"></div>
+                <button class="btn btn-primary" onclick="showAthleteModal()">
+                    <i class="fas fa-user"></i> Athlete Info
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <div class="content-grid">
+                <!-- Left Panel - Exercise Selection -->
+                <div class="panel exercise-panel">
+                    <h2>Select Exercise</h2>
+                    <div class="exercise-grid">
+                        <div class="exercise-card" onclick="selectExercise('jumping_jacks')">
+                            <i class="fas fa-running"></i>
+                            <h3>Jumping Jacks</h3>
+                            <p>Full body cardio exercise</p>
+                        </div>
+                        <div class="exercise-card" onclick="selectExercise('push_ups')">
+                            <i class="fas fa-dumbbell"></i>
+                            <h3>Push Ups</h3>
+                            <p>Upper body strength</p>
+                        </div>
+                        <div class="exercise-card" onclick="selectExercise('sit_ups')">
+                            <i class="fas fa-chair"></i>
+                            <h3>Sit Ups</h3>
+                            <p>Core strength</p>
+                        </div>
+                        <div class="exercise-card" onclick="selectExercise('plank')">
+                            <i class="fas fa-grip-horizontal"></i>
+                            <h3>Plank Hold</h3>
+                            <p>Core endurance</p>
+                        </div>
+                        <div class="exercise-card" onclick="selectExercise('vertical_jump')">
+                            <i class="fas fa-arrow-up"></i>
+                            <h3>Vertical Jump</h3>
+                            <p>Explosive power</p>
+                        </div>
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div class="control-buttons">
+                        <button class="btn btn-success" onclick="startRecording()">
+                            <i class="fas fa-video"></i> Start Recording
+                        </button>
+                        <button class="btn btn-warning" onclick="resetExercise()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                        <button class="btn btn-primary" onclick="saveSession()">
+                            <i class="fas fa-save"></i> Save Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Center Panel - Video Feed -->
+                <div class="panel video-panel">
+                    <div class="current-exercise" id="currentExercise">
+                        <h2>No Exercise Selected</h2>
+                        <p>Select an exercise from the left panel to begin</p>
+                    </div>
+                    <div class="video-container">
+                        <img src="{{ url_for('video_feed') }}" class="video-feed">
+                        <div class="recording-indicator" id="recordingIndicator">
+                            <i class="fas fa-circle"></i> Recording
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Metrics & Instructions -->
+                <div class="panel info-panel">
+                    <!-- Metrics Display -->
+                    <div class="metrics-section">
+                        <h2>Performance Metrics</h2>
+                        <div id="metricsDisplay" class="metrics-container">
+                            <div class="metric-card">
+                                <i class="fas fa-hashtag"></i>
+                                <div class="metric-info">
+                                    <span class="metric-label">Count</span>
+                                    <span class="metric-value" id="metricCount">0</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <i class="fas fa-check-circle"></i>
+                                <div class="metric-info">
+                                    <span class="metric-label">Form Score</span>
+                                    <span class="metric-value" id="metricForm">--%</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="metric-info">
+                                    <span class="metric-label">Status</span>
+                                    <span class="metric-value" id="metricStatus">Ready</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="instructions-section">
+                        <h2>Instructions</h2>
+                        <div id="instructionsDisplay" class="instructions-container">
+                            <p>Select an exercise to see instructions</p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Chart -->
+                    <div class="progress-section">
+                        <h2>Session Progress</h2>
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Athlete Info Modal -->
+    <div class="modal" id="athleteModal">
+        <div class="modal-content">
+            <h2>Athlete Information</h2>
+            <form id="athleteForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="athleteName" required>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="athleteAge" required>
+                </div>
+                <div class="form-group">
+                    <label>Sport</label>
+                    <select id="athleteSport">
+                        <option>Athletics</option>
+                        <option>Basketball</option>
+                        <option>Football</option>
+                        <option>Cricket</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="athleteLocation" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
